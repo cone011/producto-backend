@@ -7,8 +7,9 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const app = express();
 
-const cagetoriesRouter = require("./Routes/CategoriesRouter");
-const productsRouter = require("./Routes/ProductsRouter");
+const cagetoriesRouter = require("./Routes/catgories");
+const productsRouter = require("./Routes/products");
+const userRoutes = require("./Routes/user");
 
 const accessLogStream = fs.createWriteStream(
   path.join(__dirname, "access.log"),
@@ -39,6 +40,7 @@ app.use((error, req, res, next) => {
 
 app.use("/api", cagetoriesRouter);
 app.use("/api", productsRouter);
+app.use("/api", userRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

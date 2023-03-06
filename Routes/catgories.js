@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { param } = require("express-validator");
-const categoriesController = require("../Controllers/CategoriesController");
+const categoriesController = require("../Controllers/categories");
 
 router.get("/categoria", categoriesController.getAllCategories);
 

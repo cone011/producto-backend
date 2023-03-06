@@ -16,10 +16,8 @@ exports.getProducts = async (req, res, next) => {
 
 exports.getSearchProduct = async (req, res, next) => {
   try {
-    console.log("entro aca search");
     const errors = validationResult(req);
     const searchProduct = req.query.searchProduct;
-    console.log(searchProduct);
     const result = await fetch(
       `${process.env.CALL_API_MERCADO}${process.env.SITE}/search?q=${searchProduct}`
     );
