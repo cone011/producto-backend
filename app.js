@@ -13,7 +13,7 @@ const productsRouter = require("./Routes/products");
 const userRoutes = require("./Routes/user");
 dotenv.config();
 
-const MONGODB_URL = "mongodb://0.0.0.0:27017/apiCommerce";
+const MONGODB_URL = "mongodb://127.0.0.1:27017/apiCommerce";
 
 const accessLogStream = fs.createWriteStream(
   path.join(__dirname, "access.log"),
