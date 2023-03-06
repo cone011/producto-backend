@@ -7,6 +7,9 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const app = express();
 
+const cagetoriesRouter = require("./Routes/CategoriesRouter");
+const productsRouter = require("./Routes/ProductsRouter");
+
 const accessLogStream = fs.createWriteStream(
   path.join(__dirname, "access.log"),
   { flags: "a" }
@@ -33,6 +36,9 @@ app.use((error, req, res, next) => {
   const message = error.message;
   res.status(stauts).json({ isError: true, message: message });
 });
+
+app.use("/api", cagetoriesRouter);
+app.use("/api", productsRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
