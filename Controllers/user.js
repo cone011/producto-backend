@@ -8,8 +8,8 @@ exports.signUp = async (req, res, next) => {
   const errors = validationResult(req);
   errorHanlder(errors);
   const email = req.body.email;
-  const name = req.body.name;
   const password = req.body.password;
+  const name = "testing";
   try {
     const hashPw = await bcrypt.hash(password, 12);
     const user = new Users({

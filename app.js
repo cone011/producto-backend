@@ -6,19 +6,24 @@ const dotenv = require("dotenv");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const app = express();
+const mongoose = require("mongoose");
 
 const cagetoriesRouter = require("./Routes/catgories");
 const productsRouter = require("./Routes/products");
 const userRoutes = require("./Routes/user");
+dotenv.config();
+
+const MONGODB_URL = "mongodb://0.0.0.0:27017/apiCommerce";
 
 const accessLogStream = fs.createWriteStream(
   path.join(__dirname, "access.log"),
   { flags: "a" }
 );
 
+app.use(bodyParser.json());
+
 app.use(helmet());
 app.use(morgan("combined", { stream: accessLogStream }));
-dotenv.config();
 
 const port = process.env.PORT || 3000;
 
@@ -42,6 +47,17 @@ app.use("/api", cagetoriesRouter);
 app.use("/api", productsRouter);
 app.use("/api", userRoutes);
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`Example app listening at http://localhost:${port}`);
+// });
+
+mongoose
+  .connect(MONGODB_URL)
+  .then((result) => {
+    app.listen(process.env.PORT, () => {
+      console.log(`Example app listening at http://localhost:${port}`);
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
