@@ -26,7 +26,6 @@ exports.getProducts = async (req, res, next) => {
     //   imageUrl: results[0].thumbnail,
     //   price: results[0].price,
     // });
-    //const resultsave = await productObject.save();
     res.status(200).json({ message: "OK", ...jsonFormat });
   } catch (err) {
     console.log(err);
