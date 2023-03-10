@@ -41,7 +41,7 @@ exports.login = async (req, res, next) => {
       throw error;
     }
     userFound = user;
-    const isEqual = await bcrypt.compare(password, user.password);
+    const isEqual = bcrypt.compare(password, user.password);
     if (!isEqual) {
       const error = new Error("Invalid password!");
       error.statusCode = 401;
@@ -53,7 +53,7 @@ exports.login = async (req, res, next) => {
         userId: userFound._id.toString(),
       },
       `${process.env.VALID_JWT}`,
-      { expiresIn: "24h" }
+      { expiresIn: "1h" }
     );
     res.status(200).json({
       message: "OK",

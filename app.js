@@ -11,6 +11,8 @@ const mongoose = require("mongoose");
 const cagetoriesRouter = require("./Routes/catgories");
 const productsRouter = require("./Routes/products");
 const userRoutes = require("./Routes/user");
+const orderRoutes = require("./Routes/order");
+
 dotenv.config();
 
 const MONGODB_URL = "mongodb://127.0.0.1:27017/apiCommerce";
@@ -31,9 +33,9 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "OPTIONS, GET, POST, PUT, DELETE, PATCH"
+    "OPTIONS, GET, POST, PUT, PATCH, DELETE"
   );
-  res.setHeader("Acess-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
 
@@ -46,6 +48,7 @@ app.use((error, req, res, next) => {
 app.use("/api", cagetoriesRouter);
 app.use("/api", productsRouter);
 app.use("/api", userRoutes);
+app.use("/api", orderRoutes);
 
 // app.listen(port, () => {
 //   console.log(`Example app listening at http://localhost:${port}`);
