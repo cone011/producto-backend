@@ -1,10 +1,12 @@
 const { validationResult } = require("express-validator");
-const product = require("../Models/product");
+//const product = require("../Models/product");
 const { getCurrencyById } = require("./currency");
+const { errorHanlder } = require("../utils/errorHandler");
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const errros = validationResult(req);
+    const errors = validationResult(req);
+    errorHanlder(errors);
     const categoryId = req.query.categoryId;
     const result = await fetch(
       `${process.env.CALL_API_MERCADO}${process.env.SITE}/search?category=${categoryId}`
@@ -31,7 +33,7 @@ exports.getProducts = async (req, res, next) => {
     //   imageUrl: results[0].thumbnail,
     //   price: results[0].price,
     // });
-    res.status(200).json({ message: "OK", jsonFormat });
+    res.status(200).json({ message: "OK", ...jsonFormat });
   } catch (err) {
     console.log(err);
   }
@@ -46,6 +48,21 @@ exports.getSearchProduct = async (req, res, next) => {
     );
     const jsonFormat = await result.json();
     res.status(200).json({ message: "OK", result: jsonFormat });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.getProductoById = async (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+    errorHanlder(errors);
+    const productId = req.params.productId;
+    const result = await fetch(
+      `${process.env.CALL_API_MERCADO}items/${productId}`
+    );
+    const dataJson = await result.json();
+    res.status(200).json({ message: "OK", ...dataJson });
   } catch (err) {
     console.log(err);
   }
