@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const product = require("../Models/product");
+const { getCurrencyById } = require("./currency");
 
 exports.getProducts = async (req, res, next) => {
   try {
@@ -9,6 +10,10 @@ exports.getProducts = async (req, res, next) => {
       `${process.env.CALL_API_MERCADO}${process.env.SITE}/search?category=${categoryId}`
     );
     const jsonFormat = await result.json();
+    const currencyData = await getCurrencyById(process.env.CURRENT_COUNTRY);
+    const newFormat = reformProductData(jsonFormat.results, currencyData);
+    console.log(newFormat.length);
+    //const resultData = await getCurrencyById(jsonFormat.results[0].currency_id);
     // const { results } = jsonFormat;
     // let arrSave = [];
     // for (let i = 0; i < results.length; i++) {
@@ -26,7 +31,7 @@ exports.getProducts = async (req, res, next) => {
     //   imageUrl: results[0].thumbnail,
     //   price: results[0].price,
     // });
-    res.status(200).json({ message: "OK", ...jsonFormat });
+    res.status(200).json({ message: "OK", jsonFormat });
   } catch (err) {
     console.log(err);
   }
@@ -45,3 +50,27 @@ exports.getSearchProduct = async (req, res, next) => {
     console.log(err);
   }
 };
+
+function reformProductData(arrPass, currencyData) {
+  let arrReturn = [];
+  async function recursiveWay(arr) {
+    if (arr.length <= 0) return;
+    let currentValue = arr[0];
+    arrReturn.push({
+      id: currentValue.id,
+      title: currentValue.title,
+      price: {
+        currency: currencyData.description,
+        amount: currentValue.installments.amount,
+        decimals: currencyData.decimal_places,
+      },
+      picture: currentValue.thumbnail,
+      condition: currentValue.condition,
+      free_shipping: currentValue.shipping.free_shipping,
+      sell_price: currentValue.price,
+    });
+    return recursiveWay(arr.slice(1));
+  }
+  recursiveWay(arrPass);
+  return arrReturn;
+}
