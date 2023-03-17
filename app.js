@@ -12,6 +12,7 @@ const cagetoriesRouter = require("./Routes/catgories");
 const productsRouter = require("./Routes/products");
 const userRoutes = require("./Routes/user");
 const orderRoutes = require("./Routes/order");
+const paymentRouter = require("./Routes/payment");
 
 dotenv.config();
 
@@ -49,6 +50,7 @@ app.use("/api", cagetoriesRouter);
 app.use("/api", productsRouter);
 app.use("/api", userRoutes);
 app.use("/api", orderRoutes);
+app.use("/api", paymentRouter);
 
 // app.listen(port, () => {
 //   console.log(`Example app listening at http://localhost:${port}`);
