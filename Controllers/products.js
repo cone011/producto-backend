@@ -1,5 +1,4 @@
 const { validationResult } = require("express-validator");
-//const product = require("../Models/product");
 const { getCurrencyById } = require("./currency");
 const { errorHanlder } = require("../utils/errorHandler");
 
@@ -14,25 +13,6 @@ exports.getProducts = async (req, res, next) => {
     const jsonFormat = await result.json();
     const currencyData = await getCurrencyById(process.env.CURRENT_COUNTRY);
     const newFormat = reformProductData(jsonFormat.results, currencyData);
-    console.log(newFormat.length);
-    //const resultData = await getCurrencyById(jsonFormat.results[0].currency_id);
-    // const { results } = jsonFormat;
-    // let arrSave = [];
-    // for (let i = 0; i < results.length; i++) {
-    //   arrSave.push({
-    //     productCode: results[i].id,
-    //     title: results[i].title,
-    //     imageUrl: results[i].thumbnail,
-    //     price: results[i].price,
-    //   });
-    // }
-    // await product.insertMany(arrSave);
-    // const productObject = new product({
-    //   productCode: results[0].id,
-    //   title: results[0].title,
-    //   imageUrl: results[0].thumbnail,
-    //   price: results[0].price,
-    // });
     res.status(200).json({ message: "OK", ...jsonFormat });
   } catch (err) {
     console.log(err);
