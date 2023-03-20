@@ -13,13 +13,16 @@ router.post(
       "number",
       "There is no credit card number assignment to this payment"
     ).isNumeric(),
-    body("name", "There is not expiry data assignment to this payment")
+    body("expiry", "There is not expiry data assignment to this payment")
       .trim()
       .isLength({ min: 4 }),
-    body("name", "There is not cvc data assignment to this payment")
+    body("cvc", "There is not cvc data assignment to this payment")
       .trim()
       .isLength({ min: 3 }),
-    body("name", "There is not amount assignment to this payment").isNumeric(),
+    body(
+      "totalAmount",
+      "There is not amount assignment to this payment"
+    ).isNumeric(),
   ],
   paymentController.insertPayment
 );

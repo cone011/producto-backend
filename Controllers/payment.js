@@ -19,7 +19,7 @@ exports.insertPayment = async (req, res, next) => {
       totalAmount: totalAmount,
     });
     const result = await payment.save();
-    res.status(201).json({ message: "OK", result: result._id });
+    res.status(201).json({ message: "OK", result: result._id, isSaved: true });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
