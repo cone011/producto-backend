@@ -2,9 +2,11 @@ const express = require("express");
 const router = express.Router();
 const { body } = require("express-validator");
 const paymentController = require("../Controllers/payment");
+const isAuth = require("../middleware/isAuth");
 
 router.post(
   "/payment",
+  isAuth,
   [
     body("name", "There is not name assignment to this payment")
       .trim()

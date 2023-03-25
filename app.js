@@ -52,10 +52,6 @@ app.use("/api", userRoutes);
 app.use("/api", orderRoutes);
 app.use("/api", paymentRouter);
 
-// app.listen(port, () => {
-//   console.log(`Example app listening at http://localhost:${port}`);
-// });
-
 mongoose
   .connect(MONGODB_URL)
   .then((result) => {
