@@ -1,11 +1,12 @@
 const { validationResult } = require("express-validator");
 const Payment = require("../Models/payment");
-const { errorHanlder } = require("../utils/errorHandler");
 
 exports.insertPayment = async (req, res, next) => {
   try {
     const errors = validationResult(req);
-    errorHanlder(errors);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
     const name = req.body.name;
     const number = req.body.number;
     const expiry = req.body.expiry;

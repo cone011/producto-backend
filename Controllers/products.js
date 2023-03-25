@@ -1,11 +1,12 @@
 const { validationResult } = require("express-validator");
 const { getCurrencyById } = require("./currency");
-const { errorHanlder } = require("../utils/errorHandler");
 
 exports.getProducts = async (req, res, next) => {
   try {
     const errors = validationResult(req);
-    errorHanlder(errors);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
     const categoryId = req.query.categoryId;
     const result = await fetch(
       `${process.env.CALL_API_MERCADO}${process.env.SITE}/search?category=${categoryId}`
@@ -15,13 +16,16 @@ exports.getProducts = async (req, res, next) => {
     const newFormat = reformProductData(jsonFormat.results, currencyData);
     res.status(200).json({ message: "OK", ...jsonFormat });
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
 exports.getSearchProduct = async (req, res, next) => {
   try {
     const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
     const searchProduct = req.query.searchProduct;
     const result = await fetch(
       `${process.env.CALL_API_MERCADO}${process.env.SITE}/search?q=${searchProduct}`
@@ -29,13 +33,16 @@ exports.getSearchProduct = async (req, res, next) => {
     const jsonFormat = await result.json();
     res.status(200).json({ message: "OK", result: jsonFormat });
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
 exports.getProductoById = async (req, res, next) => {
   try {
     const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
     errorHanlder(errors);
     const productId = req.params.productId;
     const result = await fetch(
@@ -44,7 +51,7 @@ exports.getProductoById = async (req, res, next) => {
     const dataJson = await result.json();
     res.status(200).json({ message: "OK", ...dataJson });
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
