@@ -43,7 +43,6 @@ exports.getProductoById = async (req, res, next) => {
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
-    errorHanlder(errors);
     const productId = req.params.productId;
     const result = await fetch(
       `${process.env.CALL_API_MERCADO}items/${productId}`
