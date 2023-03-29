@@ -1,5 +1,5 @@
 const { validationResult } = require("express-validator");
-const { getCurrencyById } = require("./currency");
+const { getUserSeller } = require("./user");
 
 exports.getProducts = async (req, res, next) => {
   try {
@@ -12,8 +12,8 @@ exports.getProducts = async (req, res, next) => {
       `${process.env.CALL_API_MERCADO}${process.env.SITE}/search?category=${categoryId}`
     );
     const jsonFormat = await result.json();
-    const currencyData = await getCurrencyById(process.env.CURRENT_COUNTRY);
-    const newFormat = reformProductData(jsonFormat.results, currencyData);
+    // const currencyData = await getCurrencyById(process.env.CURRENT_COUNTRY);
+    // const newFormat = reformProductData(jsonFormat.results, currencyData);
     res.status(200).json({ message: "OK", ...jsonFormat });
   } catch (err) {
     next(err);
@@ -48,7 +48,23 @@ exports.getProductoById = async (req, res, next) => {
       `${process.env.CALL_API_MERCADO}items/${productId}`
     );
     const dataJson = await result.json();
-    res.status(200).json({ message: "OK", ...dataJson });
+    const author = await getUserSeller(dataJson.seller_id);
+    const valueReturn = {
+      author: { ...author },
+      item: {
+        id: dataJson.id,
+        title: dataJson.title,
+        price: dataJson.price,
+        currency: dataJson.currency_id,
+        amount: dataJson.price,
+      },
+      picture: dataJson.pictures[0].url,
+      condition: dataJson.condition,
+      free_shipping: dataJson.shipping.free_shipping,
+      sold_quantity: dataJson.sold_quantity,
+      description: dataJson.title,
+    };
+    res.status(200).json({ message: "OK", ...valueReturn });
   } catch (err) {
     next(err);
   }

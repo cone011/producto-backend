@@ -69,3 +69,27 @@ exports.login = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getUserSeller = async (sellerId) => {
+  try {
+    const result = await fetch(
+      `${process.env.CALL_API_MERCADO}/users/${sellerId}`
+    );
+    const dataObject = await result.json();
+    const breakpoint = /\W|_/g;
+    const format = dataObject.nickname.split(breakpoint);
+    const lastname = contactLastName(format.slice(1));
+    return {
+      name: format[0],
+      lastname: lastname,
+    };
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
+function contactLastName(arr) {
+  if (arr.length === 0) return "";
+  let currentValue = arr[0];
+  return currentValue + " " + contactLastName(arr.slice(1));
+}

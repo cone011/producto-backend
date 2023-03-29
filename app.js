@@ -13,6 +13,7 @@ const productsRouter = require("./Routes/products");
 const userRoutes = require("./Routes/user");
 const orderRoutes = require("./Routes/order");
 const paymentRouter = require("./Routes/payment");
+const { init } = require("./Models/order");
 
 dotenv.config();
 
@@ -55,8 +56,10 @@ app.use("/api", paymentRouter);
 mongoose
   .connect(MONGODB_URL)
   .then((result) => {
-    app.listen(process.env.PORT, () => {
-      console.log(`Example app listening at http://localhost:${port}`);
+    const serverPort = app.listen(process.env.PORT || 5050);
+    const io = require("./socket").init(serverPort);
+    io.on("connection", (socket) => {
+      console.log("Client connected");
     });
   })
   .catch((err) => {
