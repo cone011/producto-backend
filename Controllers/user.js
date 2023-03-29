@@ -1,12 +1,13 @@
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { errorHanlder } = require("../utils/errorHandler");
 const Users = require("../Models/Users");
 
 exports.signUp = async (req, res, next) => {
   const errors = validationResult(req);
-  errorHanlder(errors);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
   const email = req.body.email;
   const password = req.body.password;
   const name = "testing";
@@ -18,7 +19,7 @@ exports.signUp = async (req, res, next) => {
       password: hashPw,
     });
     const result = await user.save();
-    res.status(200).json({ message: "OK", userId: result._id });
+    res.status(201).json({ message: "OK", userId: result._id });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -30,7 +31,9 @@ exports.signUp = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const errors = validationResult(req);
-    errorHanlder(errors);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
     const email = req.body.email;
     const password = req.body.password;
     let userFound;
