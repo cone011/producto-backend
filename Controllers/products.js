@@ -21,9 +21,8 @@ exports.getProducts = async (req, res, next) => {
       return item.name;
     });
     const newFormat = reformProductData(jsonFormat.results, currencyData);
-    const sendNewFormat = { categories: categories, ...newFormat };
-    console.log(sendNewFormat);
-    res.status(200).json({ message: "OK", ...jsonFormat });
+    const sendNewFormat = { categories: categories, items: [...newFormat] };
+    res.status(200).json({ message: "OK", ...sendNewFormat });
   } catch (err) {
     next(err);
   }
@@ -41,14 +40,13 @@ exports.getSearchProduct = async (req, res, next) => {
     );
     const jsonFormat = await result.json();
     const currencyData = await getCurrencyById(process.env.CURRENT_COUNTRY);
-    let { values } = getCategoriesValues(jsonFormat.available_filters);
+    let { values } = getCategoriesValues(jsonFormat.filters);
     const categories = values.map((item) => {
       return item.name;
     });
     const newFormat = reformProductData(jsonFormat.results, currencyData);
-    const sendNewFormat = { categories: categories, ...newFormat };
-    console.log(sendNewFormat);
-    res.status(200).json({ message: "OK", result: jsonFormat });
+    const sendNewFormat = { categories: categories, items: [...newFormat] };
+    res.status(200).json({ message: "OK", ...sendNewFormat });
   } catch (err) {
     next(err);
   }
