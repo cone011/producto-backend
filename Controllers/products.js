@@ -40,6 +40,14 @@ exports.getSearchProduct = async (req, res, next) => {
       `${process.env.CALL_API_MERCADO}${process.env.SITE}/search?q=${searchProduct}`
     );
     const jsonFormat = await result.json();
+    const currencyData = await getCurrencyById(process.env.CURRENT_COUNTRY);
+    let { values } = getCategoriesValues(jsonFormat.available_filters);
+    const categories = values.map((item) => {
+      return item.name;
+    });
+    const newFormat = reformProductData(jsonFormat.results, currencyData);
+    const sendNewFormat = { categories: categories, ...newFormat };
+    console.log(sendNewFormat);
     res.status(200).json({ message: "OK", result: jsonFormat });
   } catch (err) {
     next(err);
