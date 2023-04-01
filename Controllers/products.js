@@ -1,5 +1,8 @@
 const { validationResult } = require("express-validator");
 const { getUserSeller } = require("./user");
+const { getCurrencyById } = require("../Controllers/currency");
+const contactLastName = require("../utils/functionAux");
+const getCategoriesValues = require("../utils/functionAux");
 
 exports.getProducts = async (req, res, next) => {
   try {
@@ -12,8 +15,14 @@ exports.getProducts = async (req, res, next) => {
       `${process.env.CALL_API_MERCADO}${process.env.SITE}/search?category=${categoryId}`
     );
     const jsonFormat = await result.json();
-    // const currencyData = await getCurrencyById(process.env.CURRENT_COUNTRY);
-    // const newFormat = reformProductData(jsonFormat.results, currencyData);
+    const currencyData = await getCurrencyById(process.env.CURRENT_COUNTRY);
+    let { values } = getCategoriesValues(jsonFormat.available_filters);
+    const categories = values.map((item) => {
+      return item.name;
+    });
+    const newFormat = reformProductData(jsonFormat.results, currencyData);
+    const sendNewFormat = { categories: categories, ...newFormat };
+    console.log(sendNewFormat);
     res.status(200).json({ message: "OK", ...jsonFormat });
   } catch (err) {
     next(err);
@@ -75,6 +84,10 @@ function reformProductData(arrPass, currencyData) {
   async function recursiveWay(arr) {
     if (arr.length <= 0) return;
     let currentValue = arr[0];
+    let nameAuthor = currentValue.seller.nickname;
+    let breakpoint = /\W|_/g;
+    let format = nameAuthor.split(breakpoint);
+    let lastname = contactLastName(format.slice(1));
     arrReturn.push({
       id: currentValue.id,
       title: currentValue.title,
@@ -82,6 +95,10 @@ function reformProductData(arrPass, currencyData) {
         currency: currencyData.description,
         amount: currentValue.installments.amount,
         decimals: currencyData.decimal_places,
+      },
+      author: {
+        name: format[0],
+        lastname: lastname,
       },
       picture: currentValue.thumbnail,
       condition: currentValue.condition,
